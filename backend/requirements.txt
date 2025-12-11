@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pandas
+openpyxl
+xlsxwriter
+presidio-analyzer
+presidio-anonymizer
+spacy>=3.7.0,<3.8.0
+
+# Note: Install ONE of these spaCy models depending on your system resources:
+# Small model (~40MB, faster but less accurate): python -m spacy download nl_core_news_sm
+# Medium model (~100MB, balanced): python -m spacy download nl_core_news_md  
+# Large model (~500MB, most accurate): python -m spacy download nl_core_news_lg
+

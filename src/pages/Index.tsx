@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { FileUploadZone } from '@/components/FileUploadZone';
-import { PIIFilterCheckboxes, PIIFilter, DEFAULT_PII_FILTERS } from '@/components/PIIFilterCheckboxes';
+import { PIIFilterCheckboxes, PIIFilter, DEFAULT_PII_FILTERS, AnonymizeOptions } from '@/components/PIIFilterCheckboxes';
 import { PreviewModal } from '@/components/PreviewModal';
-import { ColumnConfig } from '@/components/PreviewDataTable';
+import { ColumnConfig, CellData } from '@/components/PreviewDataTable';
 import { Button } from '@/components/ui/button';
-import { mockPreviewFile, mockAnonymizeFile, PreviewResponse } from '@/lib/mockData';
+import { deepAnalyzeFile, mockAnonymizeFile, DeepAnalyzeData } from '@/lib/mockData';
 import { useToast } from '@/hooks/use-toast';
 import { ShieldCheck, Loader2, Upload, Eye, Lock, Zap, FileSpreadsheet, ArrowRight } from 'lucide-react';
 
@@ -15,7 +15,7 @@ const Index = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewData, setPreviewData] = useState<PreviewResponse | null>(null);
+  const [analyzeData, setAnalyzeData] = useState<DeepAnalyzeData | null>(null);
   const [columns, setColumns] = useState<ColumnConfig[]>([]);
 
   const handleFileSelect = useCallback((selectedFile: File) => {
@@ -31,23 +31,38 @@ const Index = () => {
 
     setIsAnalyzing(true);
     try {
-      const response = await mockPreviewFile(file);
-      setPreviewData(response);
+      // Get current filter options
+      const options = filters.reduce<AnonymizeOptions>(
+        (acc, f) => ({ ...acc, [f.id]: f.enabled }),
+        {}
+      );
+
+      // Use deep analyze endpoint
+      const response = await deepAnalyzeFile(file, options);
+      setAnalyzeData(response);
       
-      // Initialize column configs with suggested PII
+      // Initialize column configs with stats from deep analyze
       const columnConfigs: ColumnConfig[] = response.columns.map(col => ({
         name: col,
         isPII: response.suggested_pii_columns.includes(col),
         suggestedPII: response.suggested_pii_columns.includes(col),
+        stats: response.column_analysis[col] || {},
       }));
       setColumns(columnConfigs);
       setPreviewOpen(true);
 
+      // Count total PII detections
+      const totalPII = Object.values(response.column_analysis).reduce(
+        (sum, stats) => sum + Object.values(stats).reduce((s, c) => s + c, 0),
+        0
+      );
+
       toast({
-        title: 'Analyse voltooid',
-        description: `${response.suggested_pii_columns.length} kolommen automatisch gedetecteerd als PII`,
+        title: 'Diepgaande analyse voltooid',
+        description: `${totalPII} PII items gedetecteerd in ${response.suggested_pii_columns.length} kolommen`,
       });
     } catch (error) {
+      console.error('Analyze error:', error);
       toast({
         variant: 'destructive',
         title: 'Fout bij analyse',
@@ -67,36 +82,31 @@ const Index = () => {
   };
 
   const handleAnonymize = async () => {
-    if (!file || !previewData) return;
+    if (!file || !analyzeData) return;
 
     setIsProcessing(true);
     try {
       const targetColumns = columns.filter(c => c.isPII).map(c => c.name);
-      const options = filters.reduce((acc, f) => ({ ...acc, [f.id]: f.enabled }), {});
-      
-      const blob = await mockAnonymizeFile(file, targetColumns, options);
-      
-      // Trigger download
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `anon_${file.name}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const options = filters.reduce<AnonymizeOptions>(
+        (acc, f) => ({ ...acc, [f.id]: f.enabled }),
+        {}
+      );
+
+      await mockAnonymizeFile(file, options, targetColumns);
 
       toast({
-        title: 'Download gestart',
-        description: `anon_${file.name} wordt gedownload`,
+        title: '✅ Download gestart',
+        description: `anon_${file.name} wordt gedownload met ${targetColumns.length} geanonimiseerde kolommen`,
       });
 
       // Reset state
       setPreviewOpen(false);
       setFile(null);
-      setPreviewData(null);
+      setAnalyzeData(null);
       setColumns([]);
+      setFilters(DEFAULT_PII_FILTERS); // Reset filters
     } catch (error) {
+      console.error('Anonymize error:', error);
       toast({
         variant: 'destructive',
         title: 'Fout bij anonimisatie',
@@ -109,7 +119,7 @@ const Index = () => {
 
   const handleClosePreview = () => {
     setPreviewOpen(false);
-    setPreviewData(null);
+    setAnalyzeData(null);
     setColumns([]);
   };
 
@@ -155,7 +165,7 @@ const Index = () => {
             {[
               { icon: Eye, title: 'Preview eerst', desc: 'Controleer wat er geanonimiseerd wordt' },
               { icon: Zap, title: 'Smart detectie', desc: 'AI herkent automatisch PII data' },
-              { icon: Lock, title: '100% privacy', desc: 'Data verlaat nooit je browser' },
+              { icon: Lock, title: 'Server-side', desc: 'Veilige processing op server' },
             ].map((feature, i) => (
               <div key={i} className="floating-card text-center p-6">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
@@ -221,13 +231,13 @@ const Index = () => {
       </main>
 
       {/* Preview Modal */}
-      {previewData && (
+      {analyzeData && (
         <PreviewModal
           open={previewOpen}
           onClose={handleClosePreview}
           onAnonymize={handleAnonymize}
           columns={columns}
-          rows={previewData.rows}
+          rows={analyzeData.rows}
           onColumnToggle={handleColumnToggle}
           isProcessing={isProcessing}
           fileName={file?.name}

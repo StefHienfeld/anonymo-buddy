@@ -1,0 +1,12 @@
+KlantNaam,KlantNummer,Polisnummer,Email,Telefoonnummer,BSN,IBAN,Postcode,Woonplaats,Makelaar,Bedrag,Vrije Tekst,ContractDatum
+Jan Jansen,123456,V0019918,jan.jansen@email.nl,06-12345678,123456782,NL91ABNA0417164300,1234 AB,Amsterdam,Spithoff,2500.50,De heer Jan Jansen heeft contact opgenomen met makelaar Spithoff voor een nieuwe polis.,2024-01-15
+Maria de Vries,789012,MAK1120,maria@example.com,+31612345678,234567891,NL20INGB0001234567,5678 CD,Rotterdam,Vanbreda Risk & Benefits,3200.00,Maria de Vries woont in Rotterdam en heeft een verzekering via Vanbreda Risk & Benefits.,2024-02-20
+Peter Bakker,345678,DL205078,peter.bakker@test.nl,0204567890,345678903,NL45RABO0123456789,9012 EF,Utrecht,Keijzers Verzekeringen,1800.75,Contact met Peter Bakker op 0204567890 of peter.bakker@test.nl voor poliswijziging.,2024-03-10
+Sophie Vermeulen,901234,V0002038,sophie@mail.com,06-98765432,456789015,NL91ABNA0417164301,3456 GH,Den Haag,Howden,4100.00,Sophie Vermeulen BSN 456789015 heeft premie betaald via IBAN NL91ABNA0417164301.,2024-04-05
+Thomas van Dijk,567890,MAK0019,thomas.vandijk@web.nl,0307654321,567890127,NL20INGB0009876543,7890 IJ,Eindhoven,Hoetmer Assurantiën,2750.25,Thomas van Dijk uit Eindhoven 7890 IJ bereikbaar op 0307654321.,2024-05-12
+Lisa Hendriks,234567,V0002100,lisa@example.nl,+31687654321,678901239,NL45RABO0987654321,2345 KL,Groningen,Nieuwenhuizen,3500.00,Voor Lisa Hendriks geldt polis V0002100 met makelaar Nieuwenhuizen.,2024-06-18
+Robert Smit,678901,MAK0457,robert.smit@domain.com,06-11223344,789012341,NL91ABNA0123456789,6789 MN,Tilburg,Calster,2200.50,Robert Smit heeft verzekering afgesloten met BSN 789012341 via IBAN NL91ABNA0123456789.,2024-07-22
+Emma de Jong,890123,V0016177,emma.dejong@mail.nl,0505556677,890123453,NL20INGB0111222333,1234 OP,Breda,Hoor van Veldhuizen,4500.00,Emma de Jong woonachtig 1234 OP Breda contactpersoon voor polis MAK0457.,2024-08-30
+Lucas Mulder,012345,MAK1350,lucas@test.com,+31622334455,901234565,NL45RABO0222333444,5678 QR,Nijmegen,Ooms,1950.75,Lucas Mulder BSN: 901234565 betaalt premie via rekening NL45RABO0222333444.,2024-09-14
+Anna Peters,345670,DL205172,anna.peters@email.com,0408889999,123456790,NL91ABNA0333444555,9012 ST,Apeldoorn,Calster,3300.00,Anna Peters uit Apeldoorn heeft polis DL205172 via makelaar Calster aangevraagd.,2024-10-01
+

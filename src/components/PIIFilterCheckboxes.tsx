@@ -23,15 +23,28 @@ export interface PIIFilter {
   enabled: boolean;
 }
 
+export interface AnonymizeOptions {
+  namen?: boolean;
+  dates?: boolean;
+  financial?: boolean;
+  bedrijf?: boolean;
+  iban?: boolean;
+  postcode?: boolean;
+  email?: boolean;
+  tel?: boolean;
+  bsn?: boolean;
+  [key: string]: boolean | undefined;
+}
+
 export const DEFAULT_PII_FILTERS: PIIFilter[] = [
-  { id: 'names', label: 'Namen (Personen)', icon: User, enabled: true },
+  { id: 'namen', label: 'Namen (Personen)', icon: User, enabled: true },
   { id: 'dates', label: 'Datum / Tijd', icon: Calendar, enabled: true },
   { id: 'financial', label: 'Financieel (Bedragen, Premies)', icon: Banknote, enabled: true },
-  { id: 'organizations', label: 'Organisaties (Bedrijfsnamen)', icon: Building2, enabled: true },
+  { id: 'bedrijf', label: 'Organisaties (Bedrijfsnamen)', icon: Building2, enabled: true },
   { id: 'iban', label: 'IBAN / Bankrekening', icon: CreditCard, enabled: true },
-  { id: 'address', label: 'Postcode / Adres', icon: MapPin, enabled: true },
+  { id: 'postcode', label: 'Postcode / Adres', icon: MapPin, enabled: true },
   { id: 'email', label: 'E-mail', icon: Mail, enabled: true },
-  { id: 'phone', label: 'Telefoonnummers', icon: Phone, enabled: true },
+  { id: 'tel', label: 'Telefoonnummers', icon: Phone, enabled: true },
   { id: 'bsn', label: 'BSN (Burger Service Nummer)', icon: Fingerprint, enabled: true },
 ];
 
